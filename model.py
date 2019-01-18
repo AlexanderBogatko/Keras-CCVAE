@@ -106,7 +106,7 @@ class CCVAE:
 
     def draw_manifold(self, lbl):
         n = 15
-        # Рисование цифр из многообразия
+        # Draw digits from manifold
         grid_x = norm.ppf(np.linspace(0.05, 0.95, n))
         grid_y = norm.ppf(np.linspace(0.05, 0.95, n))
 
@@ -123,8 +123,8 @@ class CCVAE:
                 figure[i * self.digit_size: (i + 1) * self.digit_size,
                        j * self.digit_size: (j + 1) * self.digit_size] = digit
 
-        # Визуализация
-        plt.figure(figsize=(10, 10))
+        # Visualization
+        plt.figure(figsize=(10, 10), num='Manifold')
         plt.imshow(figure, cmap='Greys_r')
         plt.grid(False)
         ax = plt.gca()
@@ -132,4 +132,16 @@ class CCVAE:
         ax.get_yaxis().set_visible(False)
         plt.show()
         return figure
+
+    def style_transfer(self, prototype, in_lbl, out_lbl):
+        rows = prototype.shape[0]
+        if isinstance(in_lbl, int):
+            lbl = in_lbl
+            in_lbl = np.zeros((rows, 10))
+            in_lbl[:, lbl] = 1
+        if isinstance(out_lbl, int):
+            lbl = out_lbl
+            out_lbl = np.zeros((rows, 10))
+            out_lbl[:, lbl] = 1
+        return self.vae.predict([prototype, in_lbl, out_lbl])
 
